@@ -139,6 +139,8 @@ p(nooxind) = []; lat(nooxind) = []; lon(nooxind) = [];
 t(nooxind) = []; s(nooxind) = []; divenum(nooxind) = [];
 time(nooxind) = []; timeday(nooxind) = [];
 npts = length(divenum);
+ndivelegs = length(unique(divenum));
+divenumvect = unique(divenum);
 % ox_interp is already the correct size
 
 
@@ -174,8 +176,8 @@ set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure');
 title('Glider Dives of Oxygen [Test]'); colorbar; caxis([175 400]);
 ylim([-5 1050]); xlim([1.5565e9 1.5643e9])
 
-%% Predict oxygen using basic multiple linear regression (with time as a
-%predictor) then assess performance
+%% Predict oxygen using random forest regression (with time as a predictor)
+%then assess performance
 %Does significantly worse than case without time (assessed using median
 % absolute error and by looking at the histogram of the absolute errors
 
@@ -202,7 +204,7 @@ ylim([-5 1050]); xlim([1.5565e9 1.5643e9])
 % ylabel('Out-of-Bag Feature Importance')
 % xticklabels({'lat','lon','time','p','t','s'})
 
-%% Predict oxygen using basic multiple linear regression (without time as a
+%% Predict oxygen using random forest regression (without time as a 
 %predictor) then assess performance
 %Set-up training/test arrays
 X_train = [lat(train_i),lon(train_i),p(train_i),t(train_i),s(train_i)]; Y_train = [ox_interp(train_i)];
