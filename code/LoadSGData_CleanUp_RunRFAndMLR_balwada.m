@@ -8,11 +8,15 @@
 %methods are compared with the measured oxygen values at all reaming glider
 %dives to assess performance.
 %pdlogan@uw.edu Updated: 01/14/21
+%dbalwada@uw.edu Updated: 01/19/21
 
+clear all
+close all
 %% Choose glider files
-% fname1 = 'CTD_659.nc'; fname2 = 'O2_659.nc'; fname3 = 'RF_MLR_O2_ResultsAtTestPts_659.nc';
-data_dir = '/Users/dhruvbalwada/OneDrive/sogos_data/data/for_dashboard/sg660/';
-fname1 = 'CTD_660.nc'; fname2 = 'O2_660.nc'; fname3 = 'RF_MLR_O2_ResultsAtTestPts_660.nc';
+data_dir = '/Users/dhruvbalwada/OneDrive/sogos_data/data/for_dashboard/sg659/';
+fname1 = 'CTD_659.nc'; fname2 = 'O2_659.nc'; fname3 = 'RF_MLR_O2_ResultsAtTestPts_659.nc';
+%data_dir = '/Users/dhruvbalwada/OneDrive/sogos_data/data/for_dashboard/sg660/';
+%fname1 = 'CTD_660.nc'; fname2 = 'O2_660.nc'; fname3 = 'RF_MLR_O2_ResultsAtTestPts_660.nc';
 
 %% Load CTD data
 p = ncread([data_dir, fname1],'pressure'); %dbar
@@ -241,7 +245,8 @@ xticklabels({'lat','lon','p','t','s'})
 figure; scatter(time(test_i),p(test_i),[],AE,'filled');
 set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure');
 title('Absolute Error (from RF) for Test Glider Dives of Oxygen'); colorbar;
-clmap(23); caxis([-80 80]); ylim([-5 1050]); xlim([1.5565e9 1.5643e9])
+%clmap(23); 
+caxis([-80 80]); ylim([-5 1050]); xlim([1.5565e9 1.5643e9])
 
 
 %% Predict oxygen using basic multiple linear regression then assess performance
@@ -258,7 +263,8 @@ title('MLR');
 figure; scatter(time(test_i),p(test_i),[],AE_mlr,'filled');
 set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure');
 title('Absolute Error (from MLR) for Test Glider Dives of Oxygen'); colorbar;
-clmap(23); caxis([-80 80]); ylim([-5 1050]); xlim([1.5565e9 1.5643e9])
+%clmap(23); 
+caxis([-80 80]); ylim([-5 1050]); xlim([1.5565e9 1.5643e9])
 
 %% Plot measured and predicted oxygen values along "test" glider tracks
 figure; scatter(time(test_i),p(test_i),[],Y_test);
