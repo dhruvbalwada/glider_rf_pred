@@ -1,7 +1,7 @@
 %LoadSGData_CleanUp_RunRFAndMLR.m
 %For the glider file selected at top of script, this code cleans up the
 %relevant CTD and O2 files amd grabs a glider down-dive collected every 5
-%days (e.g., at the Argo sampling resolution). It then constructs two 
+%days (e.g., at the Argo sampling resolution). It then constructs two
 %types of regression models (random forest and multiple linear regression)
 %that relate latitude, longitude, pressure, temperature, and salinity to
 %predict oxygen using these "Argo profiles". The predictions from the two
@@ -13,9 +13,15 @@
 clear all
 close all
 %% Choose glider files
-data_dir = '/Users/dhruvbalwada/OneDrive/sogos_data/data/for_dashboard/sg659/';
+
+% 659
+%data_dir = '/Users/dhruvbalwada/OneDrive/sogos_data/data/for_dashboard/sg659/';
+data_dir = '../data/sg659/';
 fname1 = 'CTD_659.nc'; fname2 = 'O2_659.nc'; fname3 = 'RF_MLR_O2_ResultsAtTestPts_659.nc';
+
+%660
 %data_dir = '/Users/dhruvbalwada/OneDrive/sogos_data/data/for_dashboard/sg660/';
+%data_dir = '../data/sg660/';
 %fname1 = 'CTD_660.nc'; fname2 = 'O2_660.nc'; fname3 = 'RF_MLR_O2_ResultsAtTestPts_660.nc';
 
 %% Load CTD data
@@ -51,7 +57,7 @@ ndivelegs = length(divenumvect);
 startday = [];
 for i = 1:ndivelegs
     idx = find(divenum==divenumvect(i));
-%     scatter(time(idx),p(idx),[],t(idx),'filled'); colorbar; hold on;
+    %     scatter(time(idx),p(idx),[],t(idx),'filled'); colorbar; hold on;
     startday = [startday;timeday(idx(1))];
 end
 % set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure')
@@ -80,25 +86,25 @@ npts_ox = length(p_ox);
 % divestartidx_ox = NaN*ones(length(startday_down),1);
 divenum_ox = NaN*ones(npts_ox,1);
 for i = 1:length(startday) %loop over each dive
-%     divestartidx_ox = find(startday_down(i)==timed_ox);
+    %     divestartidx_ox = find(startday_down(i)==timed_ox);
     if i == 1
         indive_idx = find(timeday_ox<startday(i+1));
         divenum_ox(indive_idx) = divenumvect(i);
-%         figure(2); scatter(timeday_ox(indive_idx),p_ox(indive_idx),[],ox(indive_idx),'filled'); colorbar;
-%         hold on; scatter(timeday(divenum==divenumvect(i)),p(divenum==divenumvect(i)));
-%         keyboard()
+        %         figure(2); scatter(timeday_ox(indive_idx),p_ox(indive_idx),[],ox(indive_idx),'filled'); colorbar;
+        %         hold on; scatter(timeday(divenum==divenumvect(i)),p(divenum==divenumvect(i)));
+        %         keyboard()
     elseif i == length(startday)
         indive_idx = find(timeday_ox>=startday(i));
         divenum_ox(indive_idx) = divenumvect(i);
-%         figure(2); scatter(timeday_ox(indive_idx),p_ox(indive_idx),[],ox(indive_idx),'filled'); colorbar;
-%         hold on; scatter(timeday(divenum==divenumvect(i)),p(divenum==divenumvect(i)));
-%         keyboard()
+        %         figure(2); scatter(timeday_ox(indive_idx),p_ox(indive_idx),[],ox(indive_idx),'filled'); colorbar;
+        %         hold on; scatter(timeday(divenum==divenumvect(i)),p(divenum==divenumvect(i)));
+        %         keyboard()
     else
         indive_idx = find(timeday_ox>=startday(i)&timeday_ox<startday(i+1));
         divenum_ox(indive_idx) = divenumvect(i);
-%         figure(2); scatter(timeday_ox(indive_idx),p_ox(indive_idx),[],ox(indive_idx),'filled'); colorbar;
-%         hold on; scatter(timeday(divenum==divenumvect(i)),p(divenum==divenumvect(i)));
-%         keyboard()
+        %         figure(2); scatter(timeday_ox(indive_idx),p_ox(indive_idx),[],ox(indive_idx),'filled'); colorbar;
+        %         hold on; scatter(timeday(divenum==divenumvect(i)),p(divenum==divenumvect(i)));
+        %         keyboard()
     end
 end
 
@@ -118,11 +124,11 @@ for i = 1:ndivelegs
         else
             disp('Debug.'); keyboard()
         end
-%         figure(3); subplot(1,2,1); scatter(time_ox(thisdive_ox),p_ox(thisdive_ox),[],ox(thisdive_ox),'filled'); colorbar;
-%         set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure'); title('Oxygen Profile (Measured)'); colorbar
-%         subplot(1,2,2); scatter(time(thisdive),p(thisdive),[],ox_tmp,'filled'); title('Oxygen Profile (Interpolated to T/S Levels)'); colorbar
-%         set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure')
-%         title('Oxygen Profile (Interpolated to T/S Levels)');
+        %         figure(3); subplot(1,2,1); scatter(time_ox(thisdive_ox),p_ox(thisdive_ox),[],ox(thisdive_ox),'filled'); colorbar;
+        %         set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure'); title('Oxygen Profile (Measured)'); colorbar
+        %         subplot(1,2,2); scatter(time(thisdive),p(thisdive),[],ox_tmp,'filled'); title('Oxygen Profile (Interpolated to T/S Levels)'); colorbar
+        %         set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure')
+        %         title('Oxygen Profile (Interpolated to T/S Levels)');
         ox_interp = [ox_interp;ox_tmp];
     else %then dive leg lacks oxygen data
         diveswithoutox = [diveswithoutox;divenumvect(i)];
@@ -195,21 +201,21 @@ ylim([-5 1050]); xlim([1.5565e9 1.5643e9])
 % rng(1); % For reproducibility
 % Mdl = TreeBagger(100,X_train,Y_train,'Method','regression','OOBPredictorImportance','On');
 % Y_pred = predict(Mdl,X_test);
-% 
+%
 % AE = Y_pred-Y_test;
-% 
+%
 % figure; scatter(1:length(Y_test),AE);
 % figure; histogram(AE);
 % figure; scatter(1:length(Y_test),sort(AE));
 % fprintf('Median absolute error from RF prediction: \n %f \n',nanmedian(AE));
-% 
+%
 % figure
 % bar(Mdl.OOBPermutedPredictorDeltaError)
-% xlabel('Feature Number') 
+% xlabel('Feature Number')
 % ylabel('Out-of-Bag Feature Importance')
 % xticklabels({'lat','lon','time','p','t','s'})
 
-%% Predict oxygen using random forest regression (without time as a 
+%% Predict oxygen using random forest regression (without time as a
 %predictor) then assess performance
 %Set-up training/test arrays
 X_train = [lat(train_i),lon(train_i),p(train_i),t(train_i),s(train_i)]; Y_train = [ox_interp(train_i)];
@@ -231,7 +237,7 @@ title('RF');
 
 figure
 bar(Mdl.OOBPermutedPredictorDeltaError)
-xlabel('Feature Number') 
+xlabel('Feature Number')
 ylabel('Out-of-Bag Feature Importance')
 xticklabels({'lat','lon','p','t','s'})
 
@@ -245,7 +251,7 @@ xticklabels({'lat','lon','p','t','s'})
 figure; scatter(time(test_i),p(test_i),[],AE,'filled');
 set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure');
 title('Absolute Error (from RF) for Test Glider Dives of Oxygen'); colorbar;
-%clmap(23); 
+%clmap(23);
 caxis([-80 80]); ylim([-5 1050]); xlim([1.5565e9 1.5643e9])
 
 
@@ -263,7 +269,7 @@ title('MLR');
 figure; scatter(time(test_i),p(test_i),[],AE_mlr,'filled');
 set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure');
 title('Absolute Error (from MLR) for Test Glider Dives of Oxygen'); colorbar;
-%clmap(23); 
+%clmap(23);
 caxis([-80 80]); ylim([-5 1050]); xlim([1.5565e9 1.5643e9])
 
 %% Plot measured and predicted oxygen values along "test" glider tracks
@@ -283,20 +289,25 @@ set(gca,'YDir','reverse'); xlabel('Time'); ylabel('Pressure');
 colorbar; caxis([175 400]); ylim([-5 1050]); xlim([1.5565e9 1.5643e9])
 
 %% Write results to netcdf file
-nccreate([data_dir, fname3],'time','Dimensions',{'npts_test',length(test_i),'1',1})
-nccreate([data_dir, fname3],'pressure','Dimensions',{'npts_test',length(test_i),'1',1})
-nccreate([data_dir, fname3],'ox_measured','Dimensions',{'npts_test',length(test_i),'1',1})
-nccreate([data_dir, fname3],'ox_predicted_RF','Dimensions',{'npts_test',length(test_i),'1',1})
-nccreate([data_dir, fname3],'ox_predicted_MLR','Dimensions',{'npts_test',length(test_i),'1',1})
-nccreate([data_dir, fname3],'absolute_error_RF','Dimensions',{'npts_test',length(test_i),'1',1})
-nccreate([data_dir, fname3],'absolute_error_MLR','Dimensions',{'npts_test',length(test_i),'1',1})
 
-ncwrite([data_dir, fname3],'time',time(test_i))
-ncwrite([data_dir, fname3],'pressure',p(test_i))
-ncwrite([data_dir, fname3],'ox_measured',Y_test)
-ncwrite([data_dir, fname3],'ox_predicted_RF',Y_pred)
-ncwrite([data_dir, fname3],'ox_predicted_MLR',Y_pred_mlr)
-ncwrite([data_dir, fname3],'absolute_error_RF',AE)
-ncwrite([data_dir, fname3],'absolute_error_MLR',AE_mlr)
+write_flag=0; % change to 1 if want to write data to nc file
 
-ncdisp([data_dir, fname3])
+if write_flag==1
+    nccreate([data_dir, fname3],'time','Dimensions',{'npts_test',length(test_i),'1',1})
+    nccreate([data_dir, fname3],'pressure','Dimensions',{'npts_test',length(test_i),'1',1})
+    nccreate([data_dir, fname3],'ox_measured','Dimensions',{'npts_test',length(test_i),'1',1})
+    nccreate([data_dir, fname3],'ox_predicted_RF','Dimensions',{'npts_test',length(test_i),'1',1})
+    nccreate([data_dir, fname3],'ox_predicted_MLR','Dimensions',{'npts_test',length(test_i),'1',1})
+    nccreate([data_dir, fname3],'absolute_error_RF','Dimensions',{'npts_test',length(test_i),'1',1})
+    nccreate([data_dir, fname3],'absolute_error_MLR','Dimensions',{'npts_test',length(test_i),'1',1})
+    
+    ncwrite([data_dir, fname3],'time',time(test_i))
+    ncwrite([data_dir, fname3],'pressure',p(test_i))
+    ncwrite([data_dir, fname3],'ox_measured',Y_test)
+    ncwrite([data_dir, fname3],'ox_predicted_RF',Y_pred)
+    ncwrite([data_dir, fname3],'ox_predicted_MLR',Y_pred_mlr)
+    ncwrite([data_dir, fname3],'absolute_error_RF',AE)
+    ncwrite([data_dir, fname3],'absolute_error_MLR',AE_mlr)
+    
+    ncdisp([data_dir, fname3])
+end
